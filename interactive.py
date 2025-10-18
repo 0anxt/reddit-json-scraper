@@ -226,23 +226,6 @@ def scrape_user(scraper):
     sort = get_input("Sort by", options=['new', 'hot', 'top', 'controversial'], default='new')
     print()
     
-    # Get time filter if needed
-    time_filter = 'all'
-    if sort in ['top', 'controversial']:
-        print("⏰ Time period for filtering:\n")
-        print("  hour - Last hour")
-        print("  day - Last 24 hours")
-        print("  week - Last 7 days")
-        print("  month - Last 30 days")
-        print("  year - Last year")
-        print("  all - All time (default)")
-        print()
-        
-        time_filter = get_input("Time period", 
-                               options=['hour', 'day', 'week', 'month', 'year', 'all'], 
-                               default='all')
-        print()
-    
     # Get limit
     print("🔢 How many posts to download?")
     print("   Recommended: 5-50 posts")
@@ -259,8 +242,6 @@ def scrape_user(scraper):
     print_separator()
     print(f"  User: u/{username}")
     print(f"  Sort: {sort}")
-    if sort in ['top', 'controversial']:
-        print(f"  Time: {time_filter}")
     print(f"  Limit: {limit} posts")
     print(f"  Comments: {'Yes' if include_comments else 'No'}")
     print(f"  Output: {scraper.output_dir}")
@@ -281,7 +262,6 @@ def scrape_user(scraper):
         scraper.download_user(
             username=username,
             sort=sort,
-            time_filter=time_filter,
             limit=limit,
             include_comments=include_comments
         )
