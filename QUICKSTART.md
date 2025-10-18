@@ -2,18 +2,26 @@
 
 Get started with Reddit JSON Scraper in **under 2 minutes**!
 
-## 🚀 Installation (30 seconds)
+## 🚀 Installation (1 minute)
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/reddit-json-scraper.git
+git clone https://github.com/0anxt/reddit-json-scraper.git
 cd reddit-json-scraper
 
-# 2. Install dependency
-pip install requests
+# 2. Create virtual environment
+python3 -m venv venv
+
+# 3. Activate it
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 4. Install dependencies
+pip install -r requirements.txt
 ```
 
 Done! ✅
+
+> ⚠️ **Getting "externally-managed-environment" error?** You need to use a virtual environment (steps 2-3 above). See [INSTALL.md](INSTALL.md) for details.
 
 ## 💡 Your First Download (30 seconds)
 

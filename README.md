@@ -23,16 +23,28 @@
 
 **1. Clone this repository**
 ```bash
-git clone https://github.com/yourusername/reddit-json-scraper.git
+git clone https://github.com/0anxt/reddit-json-scraper.git
 cd reddit-json-scraper
 ```
 
-**2. Install Python dependency**
+**2. Create a virtual environment (recommended)**
 ```bash
-pip install requests
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+**3. Install dependencies**
+```bash
+pip install -r requirements.txt
 ```
 
 That's it! You're ready to go. 🎉
+
+> 💡 **Having installation issues?** See the detailed [INSTALL.md](INSTALL.md) guide for:
+> - Virtual environment setup
+> - Platform-specific instructions (Linux/Mac/Windows)
+> - Troubleshooting common errors
+> - Docker installation
 
 ### Basic Usage
 
