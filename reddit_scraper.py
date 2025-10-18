@@ -15,6 +15,7 @@ from urllib.parse import urlparse, urljoin
 from pathlib import Path
 from datetime import datetime
 from rag_formatter import save_text_post_rag
+from chatbot_formatter import save_text_post_chatbot
 
 class RedditJSONScraper:
     """Main scraper class for Reddit content using JSON API"""
@@ -312,12 +313,18 @@ class RedditJSONScraper:
         
         if self.output_format == 'rag':
             self._save_text_post_rag(post_data, comments, save_path)
+        elif self.output_format == 'chatbot':
+            self._save_text_post_chatbot(post_data, comments, save_path)
         else:
             self._save_text_post_classic(post_data, comments, save_path)
     
     def _save_text_post_rag(self, post_data: Dict, comments: List[Dict], save_path: Path):
         """Save text post in RAG-optimized format"""
         save_text_post_rag(post_data, comments, save_path)
+    
+    def _save_text_post_chatbot(self, post_data: Dict, comments: List[Dict], save_path: Path):
+        """Save text post in chatbot template format"""
+        save_text_post_chatbot(post_data, comments, save_path)
     
     def _save_text_post_classic(self, post_data: Dict, comments: List[Dict], save_path: Path):
         """Save text post in classic format"""

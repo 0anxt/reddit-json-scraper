@@ -113,9 +113,10 @@ def scrape_subreddit(scraper):
     # Ask about output format
     print("📄 Output format:\n")
     print("  classic - Standard markdown format (default)")
-    print("  rag - RAG-optimized format for chatbot/AI systems")
+    print("  rag - RAG-optimized format with full metadata")
+    print("  chatbot - Custom chatbot template format")
     print()
-    output_format = get_input("Format", options=['classic', 'rag'], default='classic')
+    output_format = get_input("Format", options=['classic', 'rag', 'chatbot'], default='classic')
     scraper.output_format = output_format
     print()
     
@@ -228,9 +229,10 @@ def scrape_user(scraper):
     # Ask about output format
     print("📄 Output format:\n")
     print("  classic - Standard markdown format (default)")
-    print("  rag - RAG-optimized format for chatbot/AI systems")
+    print("  rag - RAG-optimized format with full metadata")
+    print("  chatbot - Custom chatbot template format")
     print()
-    output_format = get_input("Format", options=['classic', 'rag'], default='classic')
+    output_format = get_input("Format", options=['classic', 'rag', 'chatbot'], default='classic')
     scraper.output_format = output_format
     print()
     
@@ -316,9 +318,10 @@ def scrape_single_post(scraper):
     # Ask about output format
     print("📄 Output format:\n")
     print("  classic - Standard markdown format (default)")
-    print("  rag - RAG-optimized format for chatbot/AI systems")
+    print("  rag - RAG-optimized format with full metadata")
+    print("  chatbot - Custom chatbot template format")
     print()
-    output_format = get_input("Format", options=['classic', 'rag'], default='classic')
+    output_format = get_input("Format", options=['classic', 'rag', 'chatbot'], default='classic')
     scraper.output_format = output_format
     print()
     
