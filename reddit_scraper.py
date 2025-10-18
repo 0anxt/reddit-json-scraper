@@ -14,20 +14,24 @@ from typing import List, Dict, Optional, Tuple
 from urllib.parse import urlparse, urljoin
 from pathlib import Path
 from datetime import datetime
+from rag_formatter import save_text_post_rag
 
 class RedditJSONScraper:
     """Main scraper class for Reddit content using JSON API"""
     
-    def __init__(self, output_dir: str = "reddit_downloads", user_agent: str = None):
+    def __init__(self, output_dir: str = "reddit_downloads", user_agent: str = None, output_format: str = "classic"):
         """
         Initialize the Reddit scraper
         
         Args:
             output_dir: Directory to save downloaded content
             user_agent: Custom user agent string
+            output_format: Output format - 'classic' or 'rag' (RAG-optimized)
         """
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
+        
+        self.output_format = output_format  # 'classic' or 'rag'
         
         self.session = requests.Session()
         self.session.headers.update({
@@ -306,6 +310,17 @@ class RedditJSONScraper:
         """
         save_path.parent.mkdir(parents=True, exist_ok=True)
         
+        if self.output_format == 'rag':
+            self._save_text_post_rag(post_data, comments, save_path)
+        else:
+            self._save_text_post_classic(post_data, comments, save_path)
+    
+    def _save_text_post_rag(self, post_data: Dict, comments: List[Dict], save_path: Path):
+        """Save text post in RAG-optimized format"""
+        save_text_post_rag(post_data, comments, save_path)
+    
+    def _save_text_post_classic(self, post_data: Dict, comments: List[Dict], save_path: Path):
+        """Save text post in classic format"""
         with open(save_path, 'w', encoding='utf-8') as f:
             # Write post header
             f.write(f"# {post_data['title']}\n\n")

@@ -110,6 +110,15 @@ def scrape_subreddit(scraper):
     subreddit = get_input("Subreddit name")
     print()
     
+    # Ask about output format
+    print("📄 Output format:\n")
+    print("  classic - Standard markdown format (default)")
+    print("  rag - RAG-optimized format for chatbot/AI systems")
+    print()
+    output_format = get_input("Format", options=['classic', 'rag'], default='classic')
+    scraper.output_format = output_format
+    print()
+    
     # Get sort method
     print("📊 How should posts be sorted?\n")
     print("  hot - Trending posts (default)")
@@ -169,6 +178,7 @@ def scrape_subreddit(scraper):
         print(f"  Time: {time_filter}")
     print(f"  Limit: {limit} posts")
     print(f"  Comments: {'Yes' if include_comments else 'No'}")
+    print(f"  Format: {output_format}")
     print(f"  Output: {scraper.output_dir}")
     print_separator()
     print()
@@ -215,6 +225,15 @@ def scrape_user(scraper):
     username = get_input("Username")
     print()
     
+    # Ask about output format
+    print("📄 Output format:\n")
+    print("  classic - Standard markdown format (default)")
+    print("  rag - RAG-optimized format for chatbot/AI systems")
+    print()
+    output_format = get_input("Format", options=['classic', 'rag'], default='classic')
+    scraper.output_format = output_format
+    print()
+    
     # Get sort method
     print("📊 How should posts be sorted?\n")
     print("  new - Latest posts (default)")
@@ -244,6 +263,7 @@ def scrape_user(scraper):
     print(f"  Sort: {sort}")
     print(f"  Limit: {limit} posts")
     print(f"  Comments: {'Yes' if include_comments else 'No'}")
+    print(f"  Format: {output_format}")
     print(f"  Output: {scraper.output_dir}")
     print_separator()
     print()
@@ -293,6 +313,15 @@ def scrape_single_post(scraper):
     url = get_input("Post URL")
     print()
     
+    # Ask about output format
+    print("📄 Output format:\n")
+    print("  classic - Standard markdown format (default)")
+    print("  rag - RAG-optimized format for chatbot/AI systems")
+    print()
+    output_format = get_input("Format", options=['classic', 'rag'], default='classic')
+    scraper.output_format = output_format
+    print()
+    
     # Ask about comments
     include_comments = confirm("📝 Download comments with the post?")
     print()
@@ -303,6 +332,7 @@ def scrape_single_post(scraper):
     print_separator()
     print(f"  URL: {url}")
     print(f"  Comments: {'Yes' if include_comments else 'No'}")
+    print(f"  Format: {output_format}")
     print(f"  Output: {scraper.output_dir}")
     print_separator()
     print()
