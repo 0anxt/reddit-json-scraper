@@ -48,6 +48,25 @@ That's it! You're ready to go. 🎉
 
 ### Basic Usage
 
+#### 🎯 Interactive Mode (Recommended for Beginners)
+
+Just run the interactive script and answer the questions:
+
+```bash
+python interactive.py
+```
+
+The script will guide you through:
+1. What to scrape (subreddit, user, or single post)
+2. Sorting options
+3. Number of posts
+4. Whether to include comments
+5. Confirmation before downloading
+
+**Perfect for first-time users!** No need to remember command-line arguments.
+
+#### ⚡ Command-Line Mode (For Advanced Users)
+
 **Download top posts from a subreddit:**
 ```bash
 python reddit_scraper.py --subreddit python --sort top --time week --limit 25

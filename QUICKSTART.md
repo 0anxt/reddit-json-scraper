@@ -25,7 +25,19 @@ Done! ✅
 
 ## 💡 Your First Download (30 seconds)
 
-Try this command to download 5 top posts from r/python:
+### Option 1: Interactive Mode (Easiest!)
+
+Just run this and answer the questions:
+
+```bash
+python interactive.py
+```
+
+The script will ask you what you want to download. Super easy! 🚀
+
+### Option 2: Command Line
+
+Or use this command to download 5 top posts from r/python:
 
 ```bash
 python reddit_scraper.py --subreddit python --sort top --time week --limit 5
