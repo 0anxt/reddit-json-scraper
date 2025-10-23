@@ -50,3 +50,14 @@ htmlcov/
 config.yaml
 config.json
 
+# Never commit secrets/archives
+vpsgitkey*
+*.pem
+*.key
+*.p12
+*.pfx
+*.p7*
+*.crt
+*.csr
+*.der
+updated.zip
