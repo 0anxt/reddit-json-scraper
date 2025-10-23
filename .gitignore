@@ -61,3 +61,8 @@ vpsgitkey*
 *.csr
 *.der
 updated.zip
+# Non-package folders to keep out of wheels
+test_chatbot_format/
+examples/
+docs/
+scripts/
