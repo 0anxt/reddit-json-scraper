@@ -22,6 +22,7 @@ dev = ["pytest>=7.4", "flake8>=6.1", "black>=24.0", "mypy>=1.10", "aiohttp>=3.9"
 line-length = 100
 
 [tool.flake8]
+exclude = build,dist,*.egg-info,chatbot_formatter.py,rag_formatter.py,interactive.py,examples.py,test_chatbot_format
 max-line-length = 100
 extend-ignore = ["E203","W503"]
 

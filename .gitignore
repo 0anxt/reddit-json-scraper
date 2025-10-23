@@ -66,3 +66,15 @@ test_chatbot_format/
 examples/
 docs/
 scripts/
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Legacy / not part of the package
+chatbot_formatter.py
+rag_formatter.py
+examples.py
+interactive.py
+reddit_scraper.py
+test_chatbot_format/
