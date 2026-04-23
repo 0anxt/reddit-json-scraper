@@ -9,6 +9,7 @@ import requests
 import json
 import os
 import time
+import random
 import re
 from typing import List, Dict, Optional, Tuple
 from urllib.parse import urlparse, urljoin
@@ -16,6 +17,16 @@ from pathlib import Path
 from datetime import datetime
 from rag_formatter import save_text_post_rag
 from chatbot_formatter import save_text_post_chatbot
+
+# Rotating User-Agents to avoid blocks
+_USER_AGENTS = [
+    "RedditJSONScraper/1.0 (+https://github.com/0anxt/reddit-json-scraper)",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
+]
+
 
 class RedditJSONScraper:
     """Main scraper class for Reddit content using JSON API"""
@@ -36,13 +47,19 @@ class RedditJSONScraper:
         
         self.session = requests.Session()
         self.session.headers.update({
-            "User-Agent": user_agent or "RedditJSONScraper/1.0 (+https://github.com/yourname/reddit-scraper)",
+            "User-Agent": user_agent or _USER_AGENTS[0],
             "Accept": "application/json",
         })
         
         self.rate_limit_delay = 2  # seconds between requests
         self.last_request_time = 0
-        
+        self._ua_index = 0
+
+    def _rotate_user_agent(self):
+        """Rotate to a different User-Agent to avoid 403s"""
+        self._ua_index = (self._ua_index + 1) % len(_USER_AGENTS)
+        self.session.headers["User-Agent"] = _USER_AGENTS[self._ua_index]
+    
     def _rate_limit(self):
         """Implement rate limiting to avoid IP bans"""
         elapsed = time.time() - self.last_request_time
@@ -50,32 +67,66 @@ class RedditJSONScraper:
             time.sleep(self.rate_limit_delay - elapsed)
         self.last_request_time = time.time()
     
-    def _fetch_json(self, url: str) -> Optional[Dict]:
+    def _fetch_json(self, url: str, _retries: int = 0) -> Optional[Dict]:
         """
-        Fetch JSON data from a URL with error handling
+        Fetch JSON data from a URL with exponential-backoff retry on transient failures.
         
         Args:
             url: URL to fetch
+            _retries: Internal retry counter (do not pass manually)
             
         Returns:
-            Parsed JSON data or None on error
+            Parsed JSON data or None on permanent failure after retries exhausted
         """
         self._rate_limit()
         
         try:
             response = self.session.get(url, timeout=30)
             
+            # 429 Rate limited — back off and retry
             if response.status_code == 429:
-                print(f"⚠️  Rate limited! Waiting 60 seconds...")
-                time.sleep(60)
-                return self._fetch_json(url)
+                if _retries >= 5:
+                    print(f"⚠️  Rate limited after 5 retries. Giving up on: {url}")
+                    return None
+                wait = (2 ** _retries) + random.uniform(0, 1)  # exponential backoff + jitter
+                print(f"⚠️  Rate limited. Waiting {wait:.1f}s (retry {_retries + 1}/5)...")
+                time.sleep(wait)
+                return self._fetch_json(url, _retries + 1)
             
+            # 403 Forbidden — rotate UA and retry once
             if response.status_code == 403:
-                print(f"❌ Access forbidden: {url}")
+                if _retries >= 1:
+                    print(f"❌ Access forbidden after retry: {url}")
+                    return None
+                print(f"⚠️  403 Forbidden — rotating User-Agent and retrying...")
+                self._rotate_user_agent()
+                return self._fetch_json(url, _retries + 1)
+            
+            # 5xx Server errors — treat as transient, retry with backoff
+            if 500 <= response.status_code < 600:
+                if _retries >= 5:
+                    print(f"❌ Server error {response.status_code} after 5 retries. Giving up on: {url}")
+                    return None
+                wait = (2 ** _retries) + random.uniform(0, 1)
+                print(f"⚠️  Server error {response.status_code}. Waiting {wait:.1f}s (retry {_retries + 1}/5)...")
+                time.sleep(wait)
+                return self._fetch_json(url, _retries + 1)
+            
+            # Any other non-OK status
+            if response.status_code != 200:
+                print(f"❌ Unexpected status {response.status_code} for {url}")
                 return None
-                
-            response.raise_for_status()
+            
             return response.json()
+            
+        except requests.ConnectionError as e:
+            if _retries >= 5:
+                print(f"❌ Connection error after 5 retries: {e}")
+                return None
+            wait = (2 ** _retries) + random.uniform(0, 1)
+            print(f"⚠️  Connection error. Waiting {wait:.1f}s (retry {_retries + 1}/5)...")
+            time.sleep(wait)
+            return self._fetch_json(url, _retries + 1)
             
         except requests.RequestException as e:
             print(f"❌ Request error for {url}: {e}")
